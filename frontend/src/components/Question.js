@@ -28,12 +28,12 @@ class Question extends Component {
           <img
             src='delete.png'
             alt='delete'
-            className='delete'
+            className='delete btn'
             onClick={() => this.props.questionAction('DELETE')}
           />
         </div>
         <div
-          className='show-answer button'
+          className='show-answer button btn'
           onClick={() => this.flipVisibility()}
         >
           {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer

@@ -73,3 +73,7 @@ img.category {
 img.delete {
   width: 20px;
 }
+
+.btn {
+  cursor: pointer;
+}
