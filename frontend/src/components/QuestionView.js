@@ -51,7 +51,7 @@ class QuestionView extends Component {
       pageNumbers.push(
         <span
           key={i}
-          className={`page-num ${i === this.state.page ? 'active' : ''}`}
+          className={`page-num btn ${i === this.state.page ? 'active' : ''}`}
           onClick={() => {
             this.selectPage(i);
           }}
@@ -84,7 +84,7 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/searched_questions`, //TODO: update request URL
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -144,8 +144,9 @@ class QuestionView extends Component {
                 onClick={() => {
                   this.getByCategory(id);
                 }}
+                className='btn category-item'
               >
-                {this.state.categories[id]}
+                <span>{this.state.categories[id]}</span>
                 <img
                   className='category'
                   alt={`${this.state.categories[id].toLowerCase()}`}

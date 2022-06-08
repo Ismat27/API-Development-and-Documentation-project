@@ -37,3 +37,10 @@ form {
   width: 80%;
   margin: auto;
 }
+
+.category-item {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
