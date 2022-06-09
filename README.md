@@ -25,7 +25,8 @@ The API will return any of the errors below depending on the corresponding faile
     - Returns an object of question categories and success value
 - Sample: `curl http://127.0.0.1:5000/categories `
 
-```{
+```
+{
     "categories": {
         "1": "Science", 
         "2": "Art", 
@@ -43,7 +44,8 @@ The API will return any of the errors below depending on the corresponding faile
     - Results are paginated in groups of 10. Include a request argument (page) which defaults to 1 to choose page number, starting from 1. 
 - Smaple `curl http://127.0.0.1:5000/questions`
 
-```{
+```
+{
   "categories": {
     "1": "Science", 
     "2": "Art", 
@@ -134,7 +136,8 @@ The API will return any of the errors below depending on the corresponding faile
 - General: Delete the question of the given id if it existed and returns the id of the deleted question and success value.
 - Sample `curl -X DELETE http://127.0.0.1:5000/questions/16`
 
-```{
+```
+{
     'deleted': 16,
     'success': true
 }
@@ -144,7 +147,8 @@ The API will return any of the errors below depending on the corresponding faile
 - General: Create a new question in the database with the submitted data if successful and return success value.
 - Sample: `curl http://127.0.0.1:5000/questions -X POST -H "Content-Type: application/json" -d '{'answer': 'Benjamin Nnamdi Azikwe', 'category': 4, 'difficulty': 2, 'question': 'Who is the first Nigerian civilian president'}'`
 
-```{
+```
+{
     'success': true
 }
 ```
@@ -153,7 +157,8 @@ The API will return any of the errors below depending on the corresponding faile
 - General: Receive a search keyword, search for questions which their question text consist of the search keyword. Return list of matched question objects, total number of questions matched, current category and success value.
 - Sample: `curl http://127.0.0.1:5000/searched_questions -X POST -H "Content-Type: application/json" -d '{'searchTerm': 'title'}'`
 
-```{
+```
+{
     "current_category": "ALL",
     "questions": [
         {
@@ -172,7 +177,8 @@ The API will return any of the errors below depending on the corresponding faile
 - General: Get all the questions of a given category indicated by the id of the category. Returns similar result to getting questions
 - Smaple `curl http://127.0.0.1:5000/categories/6/questions`
 
-```{
+```
+{
   "current_category": "Sports", 
   "questions": [
     {
@@ -198,7 +204,8 @@ The API will return any of the errors below depending on the corresponding faile
 - General: Accept a list of previous questions user has answered if any and the quiz category then return a succes value and a **random** question not among the previous ones the user has answered if any or an empty string if none.
 - Sample: `curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{'previous_questions': [9, 12, 23], quiz_category': {'id': '4', 'type': 'History'} }'`
 
-```{
+```
+{
     "answer": "Benjamin Nnamdi Azikwe", 
     "category": 4, 
     "difficulty": 2, 
