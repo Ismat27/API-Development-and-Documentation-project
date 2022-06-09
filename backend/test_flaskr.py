@@ -14,8 +14,12 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
+        self.database_user = os.environ['DB_USER']
+        self.database_password = os.environ['DB_PASSWORD']
         self.database_name = "trivia_test"
-        self.database_path = "postgresql://{}:{}@{}/{}".format('ismail', 'Smart 5441', 'localhost:5432', self.database_name)
+        self.database_path = "postgresql://{}:{}@{}/{}".format(
+            self.database_user, self.database_password, 'localhost:5432', self.database_name
+        )
         setup_db(self.app, self.database_path)
 
         self.all_questions = [question.format() for question in  Question.query.all()]
@@ -32,11 +36,10 @@ class TriviaTestCase(unittest.TestCase):
 
         # to test for creating new question
         self.new_question = {
-            'answer': 'Benjamin Nnamdi Azikwe',
+            'answer': 'Asia',
             'category': 4,
             'difficulty': 2,
-            'id': 23,
-            'question': 'Who is the first Nigerian civilian president'
+            'question': 'What is the largest continent in terms of population'
         }
 
         # to test for searching questions
@@ -124,39 +127,39 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(result['success'], False)
         self.assertEqual(result['message'], 'request is unprocessable')
 
-    # def test_delete_question_success(self):
-    #     """
-    #         Test for successful deletion of question from the database
-    #     """
-    #     res = self.client().delete('/questions/5')
-    #     result = json.loads(res.data)
+    def test_delete_question_success(self):
+        """
+            Test for successful deletion of question from the database
+        """
+        res = self.client().delete('/questions/4')
+        result = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(result['success'], True)
-    #     self.assertEqual(result['deleted'], 5)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(result['success'], True)
+        self.assertEqual(result['deleted'], 4)
     
-    # def test_delete_question_error(self):
-    #     """
-    #         Test for deleting non existing question
-    #     """
+    def test_delete_question_error(self):
+        """
+            Test for deleting non existing question
+        """
 
-    #     res = self.client().delete('/questions/194')
-    #     result = json.loads(res.data)
+        res = self.client().delete('/questions/194')
+        result = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(result['success'], False)
-    #     self.assertEqual(result['message'], 'resource not found')
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(result['success'], False)
+        self.assertEqual(result['message'], 'resource not found')
 
-    # def test_create_new_question_success(self):
-    #     """
-    #         Test for creating a new question successfully
-    #     """
-    #     res = self.client().post('/questions', json=self.new_question)
-    #     result = json.loads(res.data)
+    def test_create_new_question_success(self):
+        """
+            Test for creating a new question successfully
+        """
+        res = self.client().post('/questions', json=self.new_question)
+        result = json.loads(res.data)
 
-    #     self.assertEqual(result['success'], True)
-    #     self.assertTrue(res.status_code, 200)
-    #     self.assertTrue(self.total_questions, 19)
+        self.assertEqual(result['success'], True)
+        self.assertTrue(res.status_code, 200)
+        self.assertTrue(self.total_questions, 19)
 
     def test_search_for_questions_success(self):
         """
