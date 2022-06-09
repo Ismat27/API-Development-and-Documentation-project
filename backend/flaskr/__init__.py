@@ -105,10 +105,13 @@ def create_app(test_config=None):
         """
         data = request.get_json()
 
-        question = data['question']
-        answer = data['answer']
-        difficulty = data['difficulty']
-        category = data['category']
+        question = data['question'].strip()
+        answer = data['answer'].strip()
+        difficulty = data['difficulty'].strip()
+        category = data['category'].strip()
+
+        if not question or not answer or not difficulty or not category:
+            abort(400)
 
         new_question = Question(
             question=question,
