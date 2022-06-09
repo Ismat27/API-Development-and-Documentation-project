@@ -6,9 +6,11 @@ import random
 
 from sqlalchemy import except_all
 
-from models import setup_db,db, Question, Category
+from models import setup_db, db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
+
+
 def get_all_categories():
     categories = Category.query.order_by(Category.id).all()
     return_categories = {}
@@ -17,19 +19,13 @@ def get_all_categories():
         return_categories[str(category['id'])] = category['type']
     return return_categories
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
     CORS(app)
 
-    """
-    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-    """
-
-    """
-    @TODO: Use the after_request decorator to set Access-Control-Allow
-    """
     # CORS Headers
     @app.after_request
     def after_request(response):
@@ -48,7 +44,8 @@ def create_app(test_config=None):
                 'categories': get_all_categories(),
                 'success': True
             })
-        except:
+        except Exception as error:
+            print(error)
             abort(422)
 
     @app.route('/questions', methods=['GET'])
@@ -74,9 +71,10 @@ def create_app(test_config=None):
                 'categories': get_all_categories(),
                 'current_category': 'ALL',
                 'success': True
-        })
+            })
 
-        except:
+        except Exception as error:
+            print(error)
             abort(422)
 
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
@@ -89,9 +87,10 @@ def create_app(test_config=None):
             abort(404)
         try:
             question.delete()
-        except:
+        except Exception as error:
             db.session.rollback()
             db.session.close()
+            print(error)
             abort(422)
         return jsonify({
             'success': True,
@@ -124,8 +123,9 @@ def create_app(test_config=None):
             return jsonify({
                 'success': True
             })
-        except:
+        except Exception as error:
             db.session.rollback()
+            print(error)
             abort(422)
         finally:
             db.session.close()
@@ -137,7 +137,9 @@ def create_app(test_config=None):
         """
         try:
             search_term = request.get_json()['searchTerm']
-            questions = Question.query.filter(Question.question.ilike(f'%{search_term}%')).order_by(Question.id).all()
+            questions = Question.query.filter(
+                Question.question.ilike(f'%{search_term}%')
+            ).order_by(Question.id).all()
             formated_questions = [question.format() for question in questions]
             total_questions = len(formated_questions)
 
@@ -149,9 +151,9 @@ def create_app(test_config=None):
 
             })
 
-        except:
+        except Exception as error:
+            print(error)
             abort(422)
-
 
     @app.route('/categories/<int:category_id>/questions')
     def category_questions(category_id):
@@ -161,7 +163,9 @@ def create_app(test_config=None):
         category = Category.query.get(category_id)
         if not category:
             abort(404)
-        questions = Question.query.filter_by(category=category_id).order_by(Question.id).all()
+        questions = Question.query.filter_by(
+            category=category_id
+        ).order_by(Question.id).all()
         formated_questions = [question.format() for question in questions]
         total_questions = len(formated_questions)
 
@@ -172,8 +176,8 @@ def create_app(test_config=None):
                 'current_category': category.format()['type'],
                 'success': True
             })
-        
-        except:
+        except Exception as error:
+            print(error)
             abort(422)
 
     @app.route('/quizzes', methods=['POST'])
@@ -186,25 +190,29 @@ def create_app(test_config=None):
         previous_questions = data['previous_questions']
         quiz_category = data['quiz_category']
         if quiz_category['id'] != 0:
-                category_id = int(quiz_category['id'])
-                questions = Question.query.filter_by(category=category_id).order_by(Question.id)
-                # ids = [question.id for question in questions.all()]
-                # print(ids, len(ids))
+            category_id = int(quiz_category['id'])
+            questions = Question.query.filter_by(
+                category=category_id
+            ).order_by(Question.id)
+            # ids = [question.id for question in questions.all()]
+            # print(ids, len(ids))
         else:
             questions = Question.query.order_by(Question.id)
-        available_questions = [question.format() for question in questions if question.id not in previous_questions]
-        
+        available_questions = [
+            question.format()
+            for question in questions if question.id not in previous_questions
+        ]
         if len(available_questions) == 0:
             return jsonify({
-            'success': True,
-            'question': ''
-        })
+                'success': True,
+                'question': ''
+            })
         return jsonify({
             'success': True,
             'question': random.choice(available_questions)
         })
 
-   # ERRORS HANDLERS
+    # ERRORS HANDLERS
 
     @app.errorhandler(400)
     def bad_request(error):
@@ -239,4 +247,3 @@ def create_app(test_config=None):
         }), 422
 
     return app
-
