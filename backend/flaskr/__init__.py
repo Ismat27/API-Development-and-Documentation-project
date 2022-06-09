@@ -45,7 +45,8 @@ def create_app(test_config=None):
     def categories():
         try:
             return jsonify({
-                'categories': get_all_categories()
+                'categories': get_all_categories(),
+                'success': True
             })
         except:
             abort(422)
@@ -191,9 +192,13 @@ def create_app(test_config=None):
         available_questions = [question.format() for question in questions if question.id not in previous_questions]
         
         if len(available_questions) == 0:
-            abort(404)
+            return jsonify({
+            'success': True,
+            'question': ''
+        })
         return jsonify({
-            'question': available_questions[0]
+            'success': True,
+            'question': random.choice(available_questions)
         })
 
    # ERRORS HANDLERS
