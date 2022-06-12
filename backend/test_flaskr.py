@@ -178,7 +178,6 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(result['success'], False)
         self.assertEqual(result['message'], 'Bad Request')
 
-
     def test_search_for_questions_success(self):
         """
             Test for searching searhing questions successfully
