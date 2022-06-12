@@ -36,10 +36,10 @@ class TriviaTestCase(unittest.TestCase):
 
         # to test for creating new question
         self.new_question = {
-            'answer': 'Asia',
+            'answer': 'Muhammed Buhari',
             'category': 4,
             'difficulty': 2,
-            'question': 'What is the largest continent in terms of population'
+            'question': 'Who is the current Nigerian president'
         }
 
         # to test for searching questions
@@ -131,12 +131,12 @@ class TriviaTestCase(unittest.TestCase):
         """
             Test for successful deletion of question from the database
         """
-        res = self.client().delete('/questions/4')
+        res = self.client().delete('/questions/26')
         result = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(result['success'], True)
-        self.assertEqual(result['deleted'], 4)
+        self.assertEqual(result['deleted'], 26)
     
     def test_delete_question_error(self):
         """
@@ -161,6 +161,24 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(res.status_code, 200)
         self.assertTrue(self.total_questions, 19)
 
+    def test_create_new_question_error(self):
+
+        """
+            Failure test for creating new question
+        """
+        res = self.client().post('/questions', json={
+            'question': '',
+            'answer': '',
+            'difficulty': '',
+            'category': ''
+        })
+        result = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(result['success'], False)
+        self.assertEqual(result['message'], 'Bad Request')
+
+
     def test_search_for_questions_success(self):
         """
             Test for searching searhing questions successfully
@@ -176,7 +194,18 @@ class TriviaTestCase(unittest.TestCase):
 
         for i in range(0, len(result['questions'])): # comparing search results with query results
             self.assertEqual(result['questions'][i], self.search_questions[i])
-    
+
+    def test_search_for_questions_error(self):
+        """
+            Failure test for searching qustions
+        """ 
+        res = self.client().get('/searched_questions')
+        result = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(result['success'], False)
+        self.assertEqual(result['message'], 'method not allowed')
+
     def test_questions_by_category_success(self):
         """
             Test for getting questions by category successfully
@@ -220,7 +249,17 @@ class TriviaTestCase(unittest.TestCase):
         for id in self.previous_questions:
             self.assertNotEqual(id, result['question']['id'])
 
-    
+    def test_quiz_question_error(self):
+
+        """
+            Failure test for getting quiz question by sending get request instead for the only allowed post request
+        """
+        res = self.client().get('/quizzes')
+        result = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(result['success'], False)
+        self.assertEqual(result['message'], 'method not allowed')
 
 
 # Make the tests conveniently executable
