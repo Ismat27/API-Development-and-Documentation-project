@@ -194,8 +194,6 @@ def create_app(test_config=None):
             questions = Question.query.filter_by(
                 category=category_id
             ).order_by(Question.id)
-            # ids = [question.id for question in questions.all()]
-            # print(ids, len(ids))
         else:
             questions = Question.query.order_by(Question.id)
         available_questions = [
